@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cohort Q&A Hub — 10X With AI · Purely Personal</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Poppins:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#E8294C; --primary-dark:#C4203D; --primary-light:#F5607A; --primary-rgb:232,41,76;
+  --bg-page:#0A0A0A; --bg-card:#111111; --bg-card-2:#181818; --bg-card-3:#1F1F1F;
+  --border:rgba(255,255,255,0.07); --border-bright:rgba(255,255,255,0.12);
+  --text-primary:#FFFFFF; --text-secondary:rgba(255,255,255,0.58); --text-muted:rgba(255,255,255,0.30);
+  --r-sm:8px; --r-md:16px; --r-lg:24px; --r-xl:32px; --r-pill:9999px;
+  --shadow-card:0 4px 24px rgba(0,0,0,0.4); --shadow-lift:0 16px 56px rgba(0,0,0,0.6);
+  --shadow-glow:0 0 40px rgba(232,41,76,0.25); --shadow-primary:0 8px 32px rgba(232,41,76,0.35);
+  --font-display:'Playfair Display',Georgia,serif; --font-body:'Poppins',system-ui,sans-serif; --font-mono:'DM Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg-page);color:var(--text-primary);font-family:var(--font-body);font-weight:300;line-height:1.6;
+  background-image:radial-gradient(1200px 600px at 50% -200px,rgba(var(--primary-rgb),0.16),transparent 70%);
+  background-repeat:no-repeat;min-height:100vh;-webkit-font-smoothing:antialiased}
+.wrap{max-width:920px;margin:0 auto;padding:48px 24px 96px}
+
+/* Header */
+.brandbar{display:flex;align-items:center;gap:10px;font-family:var(--font-mono);font-size:11px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--text-muted);margin-bottom:40px}
+.brandbar .dot{width:7px;height:7px;border-radius:50%;background:var(--primary);box-shadow:var(--shadow-glow)}
+.hero{margin-bottom:40px}
+.eyebrow{font-family:var(--font-mono);font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--primary);margin-bottom:16px}
+h1{font-family:var(--font-display);font-weight:800;font-size:clamp(38px,6vw,60px);line-height:1.04;letter-spacing:-.02em}
+h1 em{font-style:italic;color:var(--primary)}
+.lead{color:var(--text-secondary);font-size:17px;max-width:640px;margin-top:18px}
+
+/* Search */
+.searchbox{position:relative;margin:32px 0 12px}
+.searchbox input{width:100%;background:var(--bg-card);border:1px solid var(--border-bright);border-radius:var(--r-pill);
+  color:var(--text-primary);font-family:var(--font-body);font-size:15px;padding:16px 20px 16px 50px;outline:none;transition:.2s}
+.searchbox input::placeholder{color:var(--text-muted)}
+.searchbox input:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(var(--primary-rgb),0.12)}
+.searchbox svg{position:absolute;left:18px;top:50%;transform:translateY(-50%);width:18px;height:18px;stroke:var(--text-muted)}
+.searchmeta{font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);
+  min-height:18px;padding-left:6px}
+.searchmeta b{color:var(--primary)}
+
+/* Day accordions */
+.days{margin-top:24px;display:flex;flex-direction:column;gap:18px}
+.day{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-card);
+  transition:border-color .2s,box-shadow .2s}
+.day.open{border-color:var(--border-bright)}
+.day-head{display:flex;align-items:center;gap:18px;padding:24px 26px;cursor:pointer;user-select:none}
+.day-num{flex:none;width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-family:var(--font-display);
+  font-weight:800;font-size:20px;background:linear-gradient(150deg,var(--primary),var(--primary-dark));color:#fff;box-shadow:var(--shadow-primary)}
+.day-titles{flex:1;min-width:0}
+.day-titles .lbl{font-family:var(--font-display);font-weight:700;font-size:21px;letter-spacing:-.01em}
+.day-titles .sub{color:var(--text-secondary);font-size:14px;margin-top:3px}
+.day-date{flex:none;font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;color:var(--text-muted);text-align:right}
+.chev{flex:none;width:22px;height:22px;stroke:var(--text-muted);transition:transform .25s}
+.day.open .chev{transform:rotate(180deg);stroke:var(--primary)}
+.day-body{display:none;padding:0 26px 8px}
+.day.open .day-body{display:block}
+
+/* Resources */
+.res{margin:4px 0 18px;padding:18px 20px;background:var(--bg-card-2);border:1px solid var(--border);border-radius:var(--r-md)}
+.res h4{font-family:var(--font-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px}
+.res-grid{display:flex;flex-direction:column;gap:8px}
+.res a{display:flex;align-items:center;gap:11px;color:var(--text-primary);text-decoration:none;font-size:14px;font-weight:400;
+  padding:9px 12px;border-radius:10px;transition:background .15s,color .15s}
+.res a:hover{background:rgba(var(--primary-rgb),0.10);color:var(--primary-light)}
+.res a .ic{flex:none;width:15px;height:15px;stroke:var(--primary)}
+.res a .arr{margin-left:auto;opacity:0;transition:opacity .15s;font-family:var(--font-mono);color:var(--primary)}
+.res a:hover .arr{opacity:1}
+
+/* Sub-group label */
+.grp{font-family:var(--font-mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--primary);
+  margin:22px 0 10px;padding-left:4px;display:flex;align-items:center;gap:10px}
+.grp::before{content:"";width:18px;height:1px;background:var(--primary)}
+
+/* Q&A */
+.qa{display:flex;flex-direction:column;gap:7px}
+.q{background:var(--bg-card-2);border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden;transition:border-color .15s}
+.q.open{border-color:rgba(var(--primary-rgb),0.4)}
+.q-head{display:flex;align-items:flex-start;gap:14px;padding:16px 18px;cursor:pointer}
+.q-head:hover .q-text{color:#fff}
+.q-mark{flex:none;width:24px;height:24px;border-radius:7px;background:rgba(var(--primary-rgb),0.12);color:var(--primary);
+  font-family:var(--font-display);font-weight:800;font-size:13px;display:grid;place-items:center;margin-top:1px}
+.q-text{flex:1;font-size:15px;font-weight:400;color:var(--text-secondary);transition:color .15s;line-height:1.45}
+.q.open .q-text{color:#fff;font-weight:500}
+.q-plus{flex:none;font-family:var(--font-mono);color:var(--text-muted);font-size:18px;line-height:1;margin-top:2px;transition:transform .2s,color .2s}
+.q.open .q-plus{transform:rotate(45deg);color:var(--primary)}
+.a{display:none;padding:0 18px 18px 56px}
+.q.open .a{display:block;animation:fade .25s ease}
+.a p{color:var(--text-secondary);font-size:14.5px;line-height:1.65}
+.a a{color:var(--primary-light);word-break:break-word}
+@keyframes fade{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+mark{background:rgba(var(--primary-rgb),0.30);color:#fff;border-radius:3px;padding:0 2px}
+
+.empty{display:none;text-align:center;padding:60px 20px;color:var(--text-muted)}
+.empty.show{display:block}
+.empty .big{font-family:var(--font-display);font-size:26px;color:var(--text-secondary);margin-bottom:8px}
+
+footer{margin-top:64px;padding-top:28px;border-top:1px solid var(--border);text-align:center;
+  font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted)}
+footer b{color:var(--primary)}
+@media(max-width:600px){
+  .wrap{padding:32px 16px 72px}
+  .day-head{padding:18px 16px;gap:13px}
+  .day-date{display:none}
+  .day-body{padding:0 16px 6px}
+  .a{padding-left:18px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brandbar"><span class="dot"></span> Purely Personal · by Daniel Paul</div>
+
+  <div class="hero">
+    <div class="eyebrow">10X With AI · Cohort 1</div>
+    <h1>Cohort <em>Q&A</em> Hub</h1>
+    <p class="lead">Every question asked across the cohort, with answers and the exact guides you need. Search below, or tap a day to open its questions and resource links.</p>
+  </div>
+
+  <div class="searchbox">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+    <input id="search" type="text" placeholder="Search a question or topic — e.g. install Claude, Apify token, Ikigai…" autocomplete="off">
+  </div>
+  <div class="searchmeta" id="meta"></div>
+
+  <div class="days" id="days"></div>
+
+  <div class="empty" id="empty">
+    <div class="big">No matches</div>
+    <div>Try a different word — like “skill”, “token”, “recording” or “HTML”.</div>
+  </div>
+
+  <footer>10X With AI &nbsp;·&nbsp; <b>Purely Personal</b> &nbsp;·&nbsp; by Daniel Paul</footer>
+</div>
+
+<script>const DATA = {
+  days: [
+    {
+      id: "pre1",
+      label: "Pre-Bootcamp · Day 1",
+      date: "9 June 2026",
+      blurb: "Installing Claude, Wispr Flow, migrating from ChatGPT to Claude, and creating your first project.",
+      resources: [
+        { t: "Download & Install Claude", u: "https://claude.com/download" },
+        { t: "Wispr Flow setup guide", u: "https://docs.google.com/document/d/1cOfEPNAZAOEcvrpiwhMa9r6g8kmognuq/edit" },
+        { t: "ChatGPT → Claude Migration", u: "https://docs.google.com/document/d/11iIP9DzYqbQ31NZyMtvKeBREDqnFT3USCSFyqb7b9MA/edit?usp=drive_link" },
+        { t: "How to Install Claude Skills", u: "https://docs.google.com/document/d/13Y4G2eLbwUSu_U2kvCrgn56rB6hLpdBn8jhI9vEWVUk/edit?usp=sharing" },
+        { t: "How to Add Connectors", u: "https://docs.google.com/document/d/1lVvQ1qzJUcnuWt4XBs_bsXUSau_FAXl8/edit?usp=drive_link&ouid=108604619242422290134&rtpof=true&sd=true" },
+        { t: "Claude Setup", u: "https://docs.google.com/document/d/1ddzciHYXuRs1SbTeCGtiy910qSIDnx_m/edit" }
+      ],
+      qa: [
+        ["Can it be a free Claude account, or do we need a paid one?", "A paid account is required for this program. A Pro account is enough for most people, but if you are serious about business and want to run many things, the Max account is recommended. The paid account is needed to set up automations, client profiles and project files."],
+        ["Is a Pro account enough?", "Yes, a Pro account is enough to follow the program."],
+        ["Max x5 or x20 — which should I get?", "Pro is enough to start. You can upgrade later if your usage demands it."],
+        ["Do we need a paid subscription for Wispr Flow?", "You can sign in for free (with limitations we can still use)."],
+        ["Where can I download Wispr Flow on Mac? I can't find the link.", "The Wispr Flow installation guide was shared — use that step-by-step doc; it works for both Mac and Windows. Link: https://wisprflow.ai"],
+        ["Can it be that my Wispr Flow doesn't work while Zoom is working?", "While using Zoom you'll be on mute in session, so you can use Wispr Flow with your apps."],
+        ["Wasn't the ChatGPT → Claude migration supposed to be done before this call?", "The ChatGPT and Claude migration can be done in the session itself."],
+        ["Can we do the migration with Copilot?", "Yes, we can."],
+        ["Does this apply if I have been using Gemini?", "The same approach applies. Today's walkthrough uses ChatGPT; the method to export your data/memories and bring it into Claude is the same idea for Gemini."],
+        ["Do we import from Gemini?", "You can export your data from your existing assistant (ChatGPT shown live); the same export-and-import concept is used for Gemini."],
+        ["My ChatGPT is on my phone — what do I do?", "You can still log into ChatGPT on a computer/browser to run the export prompt and migrate it to Claude."],
+        ["Can you put the export prompt here in the chat?", "Yes, the prompt and full steps are in the shared migration document. Paste the prompt: 'I'm transferring my ChatGPT's data to Claude, and I want to update my memory. Can you please go through my entire conversation and give me the required data?'"],
+        ["I did this a couple of months ago and haven't used GPT since — do I have to do it again?", "If you already exported your data recently you have a head start; you don't necessarily need to repeat it, but more recent/complete data gives Claude better context."],
+        ["I stopped using ChatGPT at the start of the year so my history is outdated — will that impact putting it into Claude?", "Outdated history still helps; the more data points the better, but even partial/older data is useful. You can always ask the model to go through your entire conversation history for more."],
+        ["The export gave me this result — is that correct?", "Yes, that's the expected output. If it gives only a small block, ask it to go through your entire ChatGPT history and give you more — the more information, the better for Claude."],
+        ["So now do we add the second prompt in the same chat?", "Yes. Just add it at the bottom of the same chat: copy-paste the prompt again and ask it to generate more."],
+        ["Is this migration only possible if we have a Claude paid account?", "A paid Claude account is required for the program overall (Pro is enough). The export from ChatGPT itself is done in ChatGPT; you then bring it into your paid Claude account."],
+        ["The session says I'm in Tanjong Pagar, Singapore — is this right?", "That is ephemeral session/location context shown by the tool, not saved memory. It's normal and nothing to worry about."],
+        ["I'm lost — do I need a paid Claude account to proceed? Is everything in the Google Drive?", "Yes, a paid Claude account (Pro is fine) is needed. All documents and links are in the shared Google Drive folder. The team will also go through it step-by-step with you in the breakout room."],
+        ["Why didn't you tell us we need a Google account before?", "Almost all students worldwide have a Google account, so it had not come up before. As a fix, the team would create a WeTransfer download link so anyone without a Google account can download the files directly. A document for non-Google users would also be created after the session."],
+        ["In China, Google is not available.", "Understood — that's exactly why the team will provide a WeTransfer / direct download link so the documents are accessible without Google."],
+        ["Where can we get a copy of the recordings?", "Recordings, the step-by-step installation guides and all documents will be sent after the session (within 24 hours), via WhatsApp and/or email, and are also in the shared Google Drive."],
+        ["Can we get the files from WhatsApp?", "Yes, links are shared in the WhatsApp group and in the Google Drive folder."],
+        ["Are all the files in the Google Drive?", "Yes, all the documents and links are in the combined Google Drive folder shared in the chat."],
+        ["Did we only do Claude memories so far?", "Step two focused on exporting your memories/data from ChatGPT into Claude. The custom instructions step is separate and comes later (also given as homework)."],
+        ["Should I do this inside Claude Desktop?", "For these setup steps use claude.ai (web), not the desktop version, when going into Settings → Customize → Skills/Connectors."],
+        ["Can I do it in Claude Desktop instead?", "Use the web version (claude.ai) / Claude Desktop for the skills and connectors steps shown; that's where Customize → Skills/Connectors lives."],
+        ["Do we use Claude.ai or Desktop?", "Use Claude.ai (web) for the customize/skills/connectors walkthrough."],
+        ["How can we be sure the skills you supply are safe / cyber-secure?", "A skill is just a .md (markdown) text file — not software that installs on your computer. You can open it in any text editor and read it. Daniel works with the world's top cybersecurity leaders (one is his client) and security is a number-one criterion; you can scan the files with antivirus (e.g. Kaspersky). Everything shared in the cohort is secure."],
+        ["Where is the folder for the skill?", "The skill folder/files were shared in the chat. Download a skill, then in Claude go to Customize → Skills → '+' → Create skill → Upload skill, and drag-and-drop it in."],
+        ["How do I open the skill in text?", "Download the .md file, right-click and open it with any text editor/text app — a skill is just a markdown text file."],
+        ["It didn't show 'upload successful' — where do I check?", "Once installed, the skill appears in your Skills list in Customize. If it shows 'upload and replace' it means it already exists; otherwise it installs directly and will be listed."],
+        ["We were asked to install a few skills before this session — are they the same or different?", "The two practice skills shared now are for learning how to install a skill; install them as practice."],
+        ["Is it the same file? All 'social proof'?", "The example shown was the 'social proof card' skill. Install the two practice skills that were shared."],
+        ["Anyone successfully connected with Canva?", "Canva does appear in Browse Connectors — search for it and try to connect. Make sure you are logged into your Canva account. Configuration isn't required today; the goal is just to see that you can connect."],
+        ["For Microsoft 365 it says 'sign in with your work account'. I have 3 work accounts — how do I manage this?", "You cannot use multiple work accounts unless you are on an Enterprise/upgraded version. We don't recommend connecting work accounts that aren't your own — use a single account and choose the one you want (e.g. your Gmail)."],
+        ["What about API?", "API / advanced connector configuration is not the focus today; connectors and APIs will be worked on tomorrow and in later sessions."],
+        ["Does the connector work with a corporate Google Workspace account, or only Gmail?", "Personal Gmail works directly. Corporate/Workspace accounts may need the right permissions or an upgraded plan; for setup today use a personal account you control."],
+        ["I don't see 'Extended' — I see 'Effort'. Is that the same?", "Yes, it's the same concept. Extended/effort thinking makes Claude reason more deeply before answering (slower, more in-depth). Turn it off for simple tasks and on for complex work where the output matters."],
+        ["If we have 4.8, should we switch down to a lower model?", "Yes. Use Haiku for most basic tasks to save credits, Sonnet for moderately complex tasks, and reserve Opus 4.8 only for very complex, high-stakes work (e.g. client deliverables). Higher models consume tokens/credits much faster on a Pro plan."],
+        ["Can I get the text for 'Instructions for Claude'?", "Yes — copy the provided custom instructions document and paste it into Settings → Instructions for Claude (custom instructions). It's also shared as homework."],
+        ["Where did you paste the instructions, and which file?", "Go to Claude → Settings → 'Instructions for Claude' (custom instructions) and paste the custom-instructions document shared in the Drive/chat."],
+        ["Can you show us again how to get there?", "Claude → your initials (bottom-left) → Settings → Customize, then Skills/Connectors or Instructions for Claude as needed."],
+        ["Are there additional documents for tomorrow?", "Documents for tomorrow are NOT shared in advance — most people need live help to implement them. Tomorrow's document will be shared just before the session."],
+        ["How do I catch up now? Can I get the step-by-step guide and recording today?", "Yes — recordings, step-by-step installation guides and all documents will be sent within 24 hours after the session (WhatsApp/email + Google Drive)."],
+        ["I'll be 30 minutes late tomorrow. Will I miss much?", "You'll be sent the recording and all materials, so you can catch up on anything missed; the team will also help in breakout rooms."],
+        ["How quickly will we have the recording? Email or WhatsApp?", "Recordings are sent within 24 hours after the session, shared via WhatsApp and/or email, and placed in the Google Drive folder."],
+        ["Can we put all WhatsApp groups under one community?", "Noted by the team as a request; the team manages the WhatsApp group(s) and will keep things organised."],
+        ["Where do we post — Social or General (WhatsApp channel)?", "Post your first social media challenge post link in the WhatsApp group so everyone can engage and support you. The team clarified which channel to use for posts vs general chat."],
+        ["Can we have clear instructions on what goes where in the WhatsApp group?", "Acknowledged — the team will provide clear posting guidelines for the WhatsApp group."],
+        ["How will we know if what we are doing is correct?", "There's no strict right/wrong during setup — just play with the settings and follow the documents. The team will verify and help in the breakout rooms, and a Q&A is held at the end of sessions."],
+        ["Do we share the video we shared in the group publicly?", "The first social media post (the vulnerable 'underdog' story) goes public on your chosen social platform. The short personal video about today goes into the WhatsApp group. Tag Daniel on the public post so he can engage with it."],
+        ["My output is plain text / not styled or fancy.", "Switch from Haiku to a stronger model (Sonnet 4.6, Opus 4.8, or Fable 5) and ask it to generate the HTML again."],
+        ["Generation appears stuck.", "Type 'Am I stuck? Please generate.' or 'Can you generate the intake form again?' — sometimes it gets stuck and needs a reminder. Or open a brand-new chat and redo the step."],
+        ["Skill not appearing after install (PC).", "Press F5 to refresh and it will appear. Closing and reopening Claude also helps."],
+        ["Can't advance to the next question when pressing Enter (Windows).", "Press Ctrl + Enter to submit / move to the next question."],
+        ["Desktop Claude app not working / errors.", "Restart your computer and relaunch Claude (clears cache and applies pending updates). If still failing, use the browser/web version — several participants found the web version worked when desktop didn't."],
+        ["Don't want to hold the push-to-talk key for voice.", "There's a toggle option — press the button instead of holding it down."],
+        ["No microphone icon to speak the answers.", "Use Wispr Flow to dictate; activate it via its shortcut (Windows + Ctrl + Space on Windows)."],
+        ["Output generated in the wrong language (Chinese/German/etc.).", "This can happen based on system/app language — ask Claude to redo it in English (and check the app's language setting)."],
+        ["The HTML link — will it stay / is it permanent?", "Use the copy link and paste it in a new tab to view the rendered HTML."],
+        ["Wispr Flow not auto-activating.", "It doesn't activate fully automatically — you trigger it with its keyboard shortcut; check your OS (Mac vs PC) for the correct shortcut."]
+      ]
+    },
+    {
+      id: "pre2",
+      label: "Pre-Bootcamp · Day 2",
+      date: "",
+      blurb: "Installing Claude Code, setting up the PATH, adding the Apify connector and creating your API token.",
+      resources: [
+        { t: "Claude Code Setup", u: "https://docs.google.com/document/d/1lVvQ1qzJUcnuWt4XBs_bsXUSau_FAXl8/edit?usp=drive_link&ouid=108604619242422290134&rtpof=true&sd=true" },
+        { t: "Claude Code — Mac & Windows Setup Guide", u: "https://docs.google.com/document/d/1RVgfi0GfDeTwVeEoxxYXy_pWdHpUBMHOY33XhvbBrpM/edit?tab=t.0#heading=h.km65qhsnldri" },
+        { t: "Apify", u: "https://docs.google.com/document/d/1qEizzcU3ZoB0OEL78_hdQNkm3X5AoyJpKXgfGTj5OYU/edit?usp=drive_link" },
+        { t: "How to add Apify", u: "https://docs.google.com/document/d/1_6OG9f32Z9OtRTcFhQE_dcXjg3fNDlHY29o0aEM4sPY/edit?tab=t.0" }
+      ],
+      qa: [
+        ["I already downloaded Co-Work on my home PC. Can I download it again on my office laptop and use both?", "Today we're installing Claude Code (slightly different from Co-Work). If you're on a PC, you must install it separately on each computer (office and home). The good news: once installed today, it's very easy to replicate on your other computer using the same account."],
+        ["Can the same account work on two different PCs with Claude Pro?", "Yes, but not at the same time. If you're using it in your office, you can't use it at home simultaneously."],
+        ["After pasting the command it shows a lot of text saying 'already installed' — is that okay?", "Yes, a lot of text means it's working. 'Command line tools are already installed' means you already did it — just press Enter or Y. It's all fine."],
+        ["Where do I share my screen in Zoom?", "Go to the center-bottom of your Zoom screen and click 'Share', then choose Desktop. If it gets stuck on 'install requested', stop the share, close the terminal, reopen it and paste the command again. Restart the program (not the computer) — it should work."],
+        ["My screen shows extra yellow text after installation — is something wrong?", "No, your installation is complete. Ignore the extra text. It just means you have to set up a native PATH, which we'll do soon. This is perfect."],
+        ["I'm not sure if Claude Code installed correctly (saw 'symbol not found' / 'system not found').", "Press Command-A then Command-C to copy the whole terminal output, paste it into Claude chat and ask 'Is my Claude Code installed? If not, give me the fix.' Claude will tell you step-by-step what to do and fix it for you — you don't need to know coding."],
+        ["Everything installed but it says 'command not found' at the bottom.", "You copied the text manually instead of using the Copy Code button, so extra characters were added. Press Command-A, Command-C, then paste the correct line from the chat (the echo/export PATH command) into the terminal and press Enter. Remove any extra text after 'version'."],
+        ["Claude kept giving me 'do this, do this' steps — should I stop?", "Yes, you stopped correctly. Everything's fine. In the next 3 weeks this will feel easy; trust the process."],
+        ["It's asking to run an optional cleanup of the bin path (two redundant pathways). What do I do?", "Leave it for now. Later in the bootcamp we use a CLI (e.g. Playwright CLI) so the computer fixes these things on your behalf — you just say 'there's an error, can you fix it' and Claude Code does it. That's exactly why we're installing Claude Code now."],
+        ["I missed the part about it not scraping social media — did I miss a step?", "No, we haven't done that step yet. The basic setup (install Apify, paste token, enable) is ready. The next setup (adding actors for social media scraping) will be shown shortly. If you've completed up to enabling, you're good."],
+        ["How do I rename myself in Zoom?", "On your display/camera tile click the 3 dots, then click Rename. Add '- PC' or '- Mac' after your name."],
+        ["Will the recording have both PC & Mac installation?", "A recording will be provided within 24 hours after the session (covers the session content; PC and Mac were split into separate breakout rooms)."],
+        ["Rename format — 'PC - name'?", "Yes — append PC or Mac to your name (e.g. 'Name - PC' or 'Name - Mac'). If you can't find the rename button, it's under the three dots on your profile tile; or type your name + PC/Mac in the chat and the team can rename you."],
+        ["Is there a Terminal user guide?", "Follow the shared Google Doc step-by-step. To open Terminal: press Command + Space (Spotlight), type 'terminal', open it, then paste the commands from the document."],
+        ["Can you show again how to go to Terminal?", "Press Option/Command + Space, type 'terminal', and open it. Then in the terminal type: xcode-select --install. A new window pops up — click Install."],
+        ["Why do I have more letters / a long script in my code?", "That's normal — a lot of text means it's working. Don't worry about the text; it has nothing to do with your project. If unsure, screenshot it and share in chat for the team to confirm."],
+        ["How do I erase what I have in the code?", "You generally don't need to erase. Follow the document step-by-step (steps 1–4). If you pasted something wrong, re-copy the correct command using the Copy Code button and paste again."],
+        ["Can you share the materials for today? I just joined.", "Yes — the team shared the Google Doc link in the chat (the single document used for everything today)."],
+        ["How long does the install usually take?", "It depends on your servers, computer and internet speed/location. Claude Code shouldn't take long — roughly 3 to 5 minutes max."],
+        ["What is the Git version? Where do I see it?", "In the terminal paste: git --version and press Enter. It will display your Git version."],
+        ["Is mine good / correct?", "Yes — if it shows the version with no error, your installation is correct. You just need to follow the next step."],
+        ["Anything more to be done?", "For now, no — once Claude Code shows installed you're set. The next (Apify actors) setup will be shown shortly."],
+        ["Where is the prompt again?", "Copy it from your terminal (or copy the command from the shared document using the Copy Code button)."],
+        ["What should we type in Claude to check?", "To check Claude Code on Mac, go to your terminal and type: claude --version"],
+        ["Claude says: 'Next step is to navigate to a project folder or create a task.' Shall I stop?", "Yes, that's fine to stop there — that message means Claude Code is working and waiting for a project."],
+        ["Do I install npm?", "Not required for today's basic setup — follow only the document's steps (1–4) for Git and Claude Code. Nothing extra needs to be installed."],
+        ["Terminal shows 'claude: command not found' — am I good?", "That means the PATH isn't set. Paste this in terminal and Enter: echo 'export PATH=\"$HOME/.claude/bin:$PATH\"' >> ~/.zshrc && source ~/.zshrc (or use $HOME/.local/bin). Then run claude --version again."],
+        ["Are we still on step 4, or step 5?", "Only up to step 4. Step 5 will be done together when the PC group rejoins, because that's when we start the projects."],
+        ["I already installed Apify from 'Build your AI Employee' — do I need to install again?", "No need to reinstall if it's already connected and configured; just ensure your token is pasted, the connector is enabled, and the actors are added."],
+        ["Apify in Settings in Claude?", "In Claude desktop go to Chat > Customize > Connectors > Browse Connectors and search 'Apify' to add it. The token comes from Apify's own Settings > API Integrations."],
+        ["Apify in browser?", "Yes — create the Apify account and token in the browser at apify.com (Settings > API Integrations), then add the Apify connector inside Claude desktop."],
+        ["Where in Settings do I create the token?", "In Apify: click your profile icon (top-right) > Settings > API Integrations > Create a new token."],
+        ["Why does the token description not matter?", "It's only for your own reference. You won't go back to check it — once set up you typically never return. It only matters if you create many tokens for multiple businesses."],
+        ["Do we copy the default token or the one we just created?", "Leave the default token as it is and create + copy a NEW token to use."],
+        ["My Apify still isn't installed.", "Common Apify error. First restart your laptop and check. If still not working, uninstall and reinstall the Apify connector and repeat the process (install > paste token > enable > save)."],
+        ["I missed where you enabled it for social media — can you explain?", "That's the actors step: paste the recommended set of Apify actors into 'Enabled Tools' and Save, then set Tool Permissions (read = Always Allow if you wish; write/delete = Needs Approval)."],
+        ["So read-only tools = 'Always Allow', write/delete = Needs Approval — correct?", "Correct. For read tools you can choose Always Allow (and set a spend limit). For Write & Delete, choose Needs Approval (or custom) so nothing is deleted without your approval."],
+        ["Is there a way to test it's working?", "Yes — once actors are connected you can ask Claude Code to run a simple scrape task; if the connector is enabled and the token valid, it will fetch data. (Full testing is covered in the bootcamp.)"],
+        ["I have a big family problem — can I join a team member tomorrow to finish this?", "We can't assign a team member to one person individually except in a breakout room or the extra help time. A recording will also be provided within 24 hours so you can catch up."],
+        ["I'm thinking of getting a new laptop — Team Mac or Team PC?", "(Light-hearted) The Mac install was noticeably easier/faster in this session than PC; either works, but Mac was smoother for this setup."],
+        ["Can you give us the post structure again?", "Post structure: Hook (start with a number/stat) > Re-hook > Problem > personal examples > emotional close + promise/CTA. Add an original, organic photo and share in the WhatsApp group."],
+        ["Is the bootcamp on Friday, same time?", "3-Week Bootcamp dates: 12, 18 & 26 June 2026."],
+        ["When is the next session — exact times?", "Session times: Helsinki (EEST) 11:00 AM–4:00 PM; Dubai (GST) 12:00–5:00 PM; UK (BST) 9:00 AM–2:00 PM; Singapore (SGT) 4:00–9:00 PM; Philippines (PHT) 4:00–9:00 PM; New York (EDT) 4:00–9:00 AM; Los Angeles (PDT) 1:00–6:00 AM."],
+        ["What is Claude Code?", "It's the deepest of the three Claude layers. Most of what was demoed on stage (~95%) is done through coding via Claude Code. It acts like a contractor who walks in with a toolbox and does the tasks for you on your behalf."],
+        ["Do I need to know coding (Python, C) to use Claude Code?", "No. You don't need to know any programming language. All you need is to 'ask the right questions'."],
+        ["What does 'ask the right questions' mean?", "Prompting. Asking the right questions IS prompting — nothing else."],
+        ["What are the three layers of Claude?", "1) Claude Chat — like a consultant giving quick answers and brainstorming. 2) Claude Co-Work — like an office employee that advises and tells you how to execute. 3) Claude Code — like a contractor with a toolbox that does the tasks for you."],
+        ["Why do we need to do this Claude Code setup?", "An app normally works only within itself, but coding happens across your entire computer. To let external applications access the code, you need to install Claude Code at the desktop/system level."],
+        ["What are the requirements to install Claude Code on a Mac?", "Three things: (1) macOS at least version 11 (Apple menu > About This Mac > More Info), (2) a paid Claude subscription (Pro is fine), and (3) 30 uninterrupted minutes with other tabs closed."],
+        ["What are the three Claude terms to understand?", "(1) claude.ai = the web version. (2) Claude Desktop = the app installed on your computer (shows a desktop icon). (3) Claude Code = the coding layer. In the desktop app you should see Chat, Co-Work, and Code options."],
+        ["Do you actually need Git for Claude Code to work?", "No, not strictly. But it's set up now because advanced custom automations in the cohort need it, and installing it now is far simpler than adding it 3 weeks later."],
+        ["What is a CLI and why does it matter?", "A CLI lets the computer perform tasks for you. Instead of manually finding and editing code lines, you tell Claude Code 'there's an error, fix it on my behalf' and it does it — which is why Claude Code is being installed now."],
+        ["What is Apify and what is an 'actor'?", "Apify is a connector that connects to your computer and does scraping/research/online tasks on your behalf. An 'actor' is a tool that performs a specific task for a specific channel (e.g. TikTok Scraper, Google Maps Scraper, LinkedIn Scraper). Apify has 1 million actors."],
+        ["Is Apify free or paid?", "It's a paid (usage-based) service but gives $5 free credits — enough for basic tasks. There's no monthly subscription; you only pay based on usage, and you can upgrade later if needed."],
+        ["What is an API / API token and why is it needed?", "An API token is a secret set of characters unique to you that lets your computer, the language model, and an external service talk to each other. You create a token in Apify so Claude Code can communicate with your Apify actors. Without it, the connection won't work."],
+        ["Why should you never share your API token?", "If the token is connected to your credit/debit card and auto-recharge is on, anyone who gets it could use all your money. Never share API tokens publicly — no screen-sharing, nowhere."],
+        ["What are 'Tool Permissions' (Always Allow vs Needs Approval)?", "Every time the AI fetches actors it needs permission. 'Always Allow' lets it run automatically (set a spend limit so it doesn't exceed, e.g. $20). 'Needs Approval' prompts you each time. For Write & Delete, use Needs Approval so nothing is deleted without your approval."],
+        ["What is the most common Apify error and how do you fix it?", "'Unable to connect extensions to the server, please try disabling and re-enabling' — or it may not show as installed. Fix: restart your laptop first; if that fails, uninstall and reinstall Apify and redo the whole process. Restarting works."],
+        ["How should I structure today's personal story post?", "Use Hook > Problem > Solution > Call to Action. Open docs.new for a fast Google Doc, write an outline (or speak it with Wispr Flow and ask AI to frame it). Start with a curiosity hook, then a re-hook, transition to the problem with personal examples, and end emotionally with a promise/CTA. Post a raw, organic image — not a fancy one."]
+      ]
+    },
+    {
+      id: "bc1",
+      label: "Bootcamp · Day 1",
+      date: "12 June 2026",
+      blurb: "The Ikigai exercise, then installing the Personal Authority and Business Authority skills to produce your Voice DNA, ICP, Messaging House, Rule of One and Brand Positioning.",
+      resources: [
+        { t: "Business Authority Foundation", u: "https://docs.google.com/document/d/1-Z0S-0Xx6GgVCqMbo5HpDS2OcZIbP9vJLF6FQ8C4HcU/edit?usp=drive_link" },
+        { t: "Skills folder — Ikigai, Personal Authority, Business Authority (+ User Guide)", u: "https://drive.google.com/drive/folders/1ifr62suMqsLQrm_ZCuh47cgcvxl7KhUS" },
+        { t: "Ikigai Skill (download)", u: "https://drive.google.com/file/d/1flSrlUG4cH9gx_20wxtogRNDsF8xn9MC/view" },
+        { t: "Background colour images folder", u: "https://drive.google.com/drive/folders/1vGvFl2bBmSQMxC7juxfi55u5hCx4thZV" },
+        { t: "LinkedIn Profile bonus", u: "https://linkedinprofile.purelypersonal.ai/" }
+      ],
+      groups: [
+        {
+          name: "Ikigai",
+          qa: [
+            ["What is Ikigai?", "Ikigai is a Japanese concept meaning a 'reason for being.' It is the intersection of four things: what you love, what you are good at, what you can be paid for, and what the world needs."],
+            ["Why are we doing the Ikigai exercise in an AI bootcamp?", "The first session is to make sure your AI sounds like YOU — it carries your values, your story, your voice. Without that foundation, building AI Employees won't produce good output. We are converting who you are into your 'voice DNA' so the AI reflects you."],
+            ["What are the four dimensions of Ikigai we work through?", "1) What you love, 2) What you are exceptionally good at, 3) What you can be paid for, 4) What the world needs. Where all four overlap is your Ikigai."],
+            ["What is a 'skill' in Claude?", "A skill is a repeatable set of instructions you upload to Claude. When you call it (with a forward slash), Claude reads the skill first and then guides you through it. The Ikigai Discovery Journey is one such skill."],
+            ["How do you start the Ikigai skill?", "In the Claude chat box, type a forward slash '/', type 'Ikigai', choose 'Ikigai Discovery Journey', then type 'Let's start'. Claude reads the skill (about 2–3 minutes) and then guides you question by question."],
+            ["Why does everyone get different questions in the skill?", "The model chooses questions based on the instructions in the skill. For some people the questions are the same, for others they differ. That is totally fine."],
+            ["What if the skill doesn't summarize my section?", "Just ask it: 'Can you please summarize my Section 1?' Then say 'move to Section 2.' You can even add '(the first four questions)' to seal it."],
+            ["Section 1 Q1 — What did you do as a kid for hours without getting paid?", "Be very specific — not just 'I liked sport' but which one and what about it. Recall what you were actually doing when time disappeared. Spend at least 5 minutes speaking on it."],
+            ["Section 1 Q2 — What activity makes time disappear today?", "Identify the current work/life activity where you look up and realise hours have passed. Be really specific. Spend ~5 minutes."],
+            ["Section 1 Q3 — If money were off the table, what would you do?", "No bills, no obligations, total freedom — what would you do? Dig deep and speak for 5 minutes."],
+            ["Section 2 — What are you exceptionally good at?", "Think about what people indirectly compliment you on repeatedly, from 3 angles: personal (partner/parents/kids), work colleagues, and strangers. Use real situations and go in depth."],
+            ["Section 2 Q2 — What do colleagues, students or friends ask you for help with?", "What do people come to you for without being invited — the things they pull you aside or DM you for? Think across colleagues/students/clients and friends."],
+            ["Section 2 Q3 — What's one skill others find hard but is easy for you?", "Not arrogance — rather what comes naturally to you that others find difficult. Speak about it specifically."],
+            ["What is your unfair advantage?", "Everyone has one. Often it traces to something you did as a child / a hobby that now gives you an edge (e.g. 20 years of dancing made being on stage effortless). Identify the thing that is just easier for you than for most people."],
+            ["Section 3 — What problem in your industry makes you genuinely angry?", "Name the thing in your space that genuinely frustrates you. There are no right answers — build your Ikigai based on what you know, not on the 'correct' answer."],
+            ["What are the businesses that will win in 2027 and beyond?", "AI-native businesses — those whose leaders AND whole teams adopt and actually use AI in the business (not just for research or images). Leaders who make sure their entire team learns AI will win."],
+            ["Section 4 — What can you be paid for?", "Ask: What are people already buying in my space? What is the market already paying for? Then check four things: Is it honest? Is it ethical? Can you actually fulfil/deliver it? Answering these completes your Ikigai."],
+            ["What does the final Ikigai output give you?", "An Ikigai statement, your archetype, four overlapping circles, your mission, content pillars, monetization path, the AI Employees you need to build, a 5-person 'orbit' of sub-AI agents, a 90-day focus, and more."],
+            ["How do you turn the text output into a nice visual?", "Ask Claude: 'Can you generate an HTML for me?' It then builds a styled, interactive version similar to the demo. Switching to a stronger model produces a far better-looking result."],
+            ["Why did my Ikigai look basic / plain text?", "Most likely you were on the Haiku model (the lowest, cheapest model). Switch to a stronger model such as Sonnet 4.6, Opus 4.8, or Fable 5 and ask it to generate the HTML again."],
+            ["What is Fable 5 and why use it?", "Fable 5 is described as the strongest model. With a very short prompt it figures things out itself and produces amazing, animated, interactive output. Best used for impressive HTML/visual generation."],
+            ["Is Fable 5 free, or does it consume credits? (included until June 22)", "It consumes credits. After the trial window it won't be available inside Claude — you'd use it via an API key. Recommended to play with it after the session if you have spare credits."],
+            ["Will results differ if run under Fable?", "The content won't vary much, but Fable produces a far more impressive, animated, interactive visual."],
+            ["Can I use Ikigai for a physical business (e.g. a food truck)?", "Yes, the process applies to physical businesses too."],
+            ["Can it be one topic or more?", "It can be more than one — anything you feel you can pour out. Just focus on answering the questions."],
+            ["Are we looking for the 'right' answers?", "No right answers. We build your Ikigai based on what you know — whatever you think, just put it in."]
+          ]
+        },
+        {
+          name: "Personal & Business Authority",
+          qa: [
+            ["What are the two authority skills we upload after Ikigai?", "Step 1: Personal Authority skill. Step 2: Business Authority skill. You upload both into Claude (Customize > Skills > + > upload)."],
+            ["What does the Business Authority output contain?", "Your ICP (ideal customer profile), Messaging House, 'Rule of One' (one avatar/one customer/one message), Brand Positioning, and a 'Business in a Box'. Agencies normally charge $10,000–$15,000 to build this."],
+            ["What is the 'Rule of One'?", "One avatar, one customer, one client you speak to, and one core message for your business. It anchors your ICP and messaging."],
+            ["Is the session content something we can sell to our own clients?", "Yes. Daniel encouraged participants to use the documents and run this same process with their own clients — many felt they could charge $1.5K–$3K+ for it — to make their investment back from day one."],
+            ["What will be our offer if we teach this?", "Participants can run this same session/process for clients and charge for it (estimates of $1.5K–$3K+ were shared). It positions you as an expert in your niche."],
+            ["Would you share how to sell this to clients?", "Yes — selling/monetization is covered in upcoming sessions (sessions 2 and 3)."],
+            ["What is the 30-Day Challenge?", "A challenge to post on social media for 30 days straight without a break, starting the following week. It builds your brand during the process; more details given in the next session."],
+            ["What is homework after Day 1?", "Complete the Personal Authority intake (and finish Business Authority). The user guide for everything lives inside the shared document. Optionally post/share your output for feedback."],
+            ["How long does today's session go?", "It's a 5-hour session."],
+            ["Should I do the Personal or the Business authority during the session?", "Business Authority is the focus during the session; Personal Authority is homework."],
+            ["Building the 20 questions for Business Authority — am I in the right stage?", "Yes, that's the correct stage."],
+            ["How can I challenge the AI's answer if it doesn't reflect me?", "Tell it to 'Act as the Devil's Advocate.' It will re-question its own answers and either correct a mistake or justify with sources (e.g. World Economic Forum data)."]
+          ]
+        },
+        {
+          name: "Installing & running the skill",
+          qa: [
+            ["Is this done in the web version or the desktop version?", "Either works — the desktop and web versions are the same for this."],
+            ["Does it make a difference if I install from Claude Code?", "Use Claude.ai (web/desktop) — go to Customize > Skills and upload the skill there."],
+            ["I opened the document — which one do I choose?", "Choose the Ikigai skill. Download it and upload it as a skill."],
+            ["Where do I add the skill in Claude?", "Left sidebar > Customize > Skills > '+' button > Create skill > Upload a skill > select the file you downloaded."],
+            ["Do we select the skill.md file or the zip?", "Download the skill (zip) and upload the whole thing as a skill via Customize > Skills."],
+            ["How do I download the skill again?", "Click the three dots and download the skill. (Skill link shared in chat.)"],
+            ["Upload the whole zip file?", "Yes — upload the whole zip file as the skill."],
+            ["Is Haiku ok as the model?", "Yes it's ok — but note the lowest model produces a plainer output; Sonnet/Opus/Fable give a much better result."],
+            ["Can you share the materials for today?", "Yes — shared Google Drive folder link in the chat (the program materials/skills folder)."],
+            ["I can't upload the skill — must I carry on?", "Yes, carry on. The team helped troubleshoot the upload separately (e.g. refresh, run in a new chat)."],
+            ["I'm using the in-Claude microphone — is there a difference vs Wispr?", "It's okay — if the in-Claude microphone is working for you, that's fine. Wispr Flow just makes voice input easier."],
+            ["My questions show '11 of 16' — what question should I be on?", "Around question 12. (For a stuck display, double-click; on Windows press Windows + Ctrl + Space.)"],
+            ["How do I get the HTML file generated?", "Just ask Claude to generate it ('Can you generate an HTML for me?')."],
+            ["Is it normal to still be generating?", "Yes — generation can take a few minutes, especially for the HTML/visual."],
+            ["How can I see the 'letter to myself'?", "If it appears stuck, type: 'Am I stuck? Please generate.' It will then produce the output."],
+            ["My generation is taking long / am I stuck?", "Type in the chat: 'Am I stuck? Please generate.' to prompt Claude to continue."],
+            ["My Ikigai is more basic than yours — missing 'letter to', 'the niche', etc. Did I do something wrong?", "You didn't do anything wrong — the model chosen was likely the lowest (Haiku). Switch to a stronger model (e.g. Sonnet 4.6) and regenerate."],
+            ["Is it fine to upload it as a zip file from the download?", "Yes."],
+            ["The skill disappeared / I'm stuck — can someone help?", "Open a new chat from the left side and re-run; ensure the skill is installed first."],
+            ["My questions look different to yours — is this okay?", "Yes it's okay. If the skill isn't showing on a PC, press F5 to refresh; you can also run it in a new chat."],
+            ["How do I make it into HTML?", "If it doesn't give it automatically, ask: 'Can you create an HTML intake form for me?'"],
+            ["Why is mine different from your screen?", "Differences are usually model-related or generation quirks — ask it to regenerate, switch to a stronger model, or run in a new chat."],
+            ["How do I speak when creating my business intake? There's no mic icon.", "Use Wispr Flow to dictate into the text box."],
+            ["How do I start Wispr Flow?", "Activate Wispr Flow per its shortcut; on Windows it's Windows + Ctrl + Space."],
+            ["It won't go to the next question when I press Enter.", "On Windows press Ctrl + Enter to submit and move on. You can also ask it to regenerate while mentioning the issue."],
+            ["It won't let me go past question one.", "Tell it to generate again and mention the issue; on Windows use Ctrl + Enter to advance."],
+            ["Is it ok to answer the questions not in HTML format?", "Yes — the HTML format is just the nicer presentation."],
+            ["The HTML link — will it stay / is it permanent?", "Use the copy link and paste it in a new tab to view the rendered HTML."],
+            ["How do you change the brand colours of the generated document?", "Give Claude your colours or colour codes and say 'Can you redo this document in my business colours?'. If you don't have brand colours yet, that's developed in the next step."],
+            ["What if I don't have business colours yet?", "That's developed in the next step — the program builds your full business personality, brand identity and visual identity after this."],
+            ["How do I change the Zoom background?", "Download the colour image, then in Zoom > Settings > Background, add the downloaded image and choose your colour."]
+          ]
+        }
+      ]
+    }
+  ]
+};
+</script>
+<script>
+const dayIcons = ["1","2","3"];
+const linkify = t => t.replace(/(https?:\/\/[^\s)]+)/g,'<a href="$1" target="_blank" rel="noopener">$1</a>');
+const esc = s => s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+
+function buildQA(list){
+  return '<div class="qa">'+list.map(([q,a])=>`
+    <div class="q" data-q="${esc(q).toLowerCase()}" data-a="${esc(a).toLowerCase()}">
+      <div class="q-head"><div class="q-mark">Q</div><div class="q-text">${esc(q)}</div><div class="q-plus">+</div></div>
+      <div class="a"><p>${linkify(esc(a))}</p></div>
+    </div>`).join('')+'</div>';
+}
+
+const container = document.getElementById('days');
+DATA.days.forEach((d,i)=>{
+  let body = '';
+  if(d.resources && d.resources.length){
+    body += '<div class="res"><h4>Guides &amp; Resources</h4><div class="res-grid">'+
+      d.resources.map(r=>`<a href="${r.u}" target="_blank" rel="noopener">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>
+        <span>${esc(r.t)}</span><span class="arr">→</span></a>`).join('')+
+      '</div></div>';
+  }
+  if(d.groups){
+    d.groups.forEach(g=>{ body += `<div class="grp">${esc(g.name)}</div>` + buildQA(g.qa); });
+  } else {
+    body += buildQA(d.qa);
+  }
+  const el = document.createElement('div');
+  el.className = 'day';
+  el.innerHTML = `
+    <div class="day-head">
+      <div class="day-num">${dayIcons[i]||(i+1)}</div>
+      <div class="day-titles"><div class="lbl">${esc(d.label)}</div><div class="sub">${esc(d.blurb)}</div></div>
+      <div class="day-date">${d.date?esc(d.date):''}</div>
+      <svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+    </div>
+    <div class="day-body">${body}</div>`;
+  container.appendChild(el);
+});
+
+// accordion: days
+container.querySelectorAll('.day-head').forEach(h=>{
+  h.addEventListener('click',()=>h.parentElement.classList.toggle('open'));
+});
+// open first day
+container.querySelector('.day')?.classList.add('open');
+
+// accordion: questions (event delegation)
+container.addEventListener('click',e=>{
+  const head = e.target.closest('.q-head');
+  if(head){ e.stopPropagation(); head.parentElement.classList.toggle('open'); }
+});
+
+// search
+const search = document.getElementById('search');
+const meta = document.getElementById('meta');
+const empty = document.getElementById('empty');
+function clearMarks(node){ node.querySelectorAll('mark').forEach(m=>m.replaceWith(m.textContent)); }
+function highlight(node,term){
+  clearMarks(node);
+  if(!term) return;
+  const walker=document.createTreeWalker(node,NodeFilter.SHOW_TEXT);
+  const re=new RegExp('('+term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','ig');
+  const targets=[];let n;
+  while(n=walker.nextNode()){ if(re.test(n.nodeValue)) targets.push(n); }
+  targets.forEach(t=>{ const span=document.createElement('span'); span.innerHTML=t.nodeValue.replace(re,'<mark>$1</mark>'); t.replaceWith(span); });
+}
+search.addEventListener('input',()=>{
+  const term=search.value.trim().toLowerCase();
+  let total=0;
+  document.querySelectorAll('.day').forEach(day=>{
+    let dayHits=0;
+    day.querySelectorAll('.q').forEach(q=>{
+      const txt=q.dataset.q, ans=q.dataset.a;
+      const hit = !term || txt.includes(term)||ans.includes(term);
+      q.style.display = hit?'':'none';
+      if(hit && term){ dayHits++; total++; q.classList.add('open'); highlight(q.querySelector('.q-text'),term); highlight(q.querySelector('.a p'),term); }
+      else if(hit){ total++; clearMarks(q); }
+      else { q.classList.remove('open'); }
+    });
+    // hide empty sub-groups
+    day.querySelectorAll('.grp').forEach(g=>{
+      let qa=g.nextElementSibling, any=false, cur=qa;
+      if(cur){ cur.querySelectorAll('.q').forEach(q=>{ if(q.style.display!=='none') any=true; }); }
+      g.style.display = (term && !any) ? 'none' : '';
+    });
+    if(term){
+      day.style.display = dayHits?'':'none';
+      if(dayHits) day.classList.add('open');
+      const res=day.querySelector('.res'); if(res) res.style.display='none';
+    }else{
+      day.style.display='';
+      const res=day.querySelector('.res'); if(res) res.style.display='';
+      day.querySelectorAll('.q').forEach(q=>q.classList.remove('open'));
+    }
+  });
+  if(term){ meta.innerHTML=`<b>${total}</b> result${total===1?'':'s'} for “${esc(search.value.trim())}”`; }
+  else { meta.textContent=''; document.querySelector('.day')?.classList.add('open'); }
+  empty.classList.toggle('show', term && total===0);
+});
+</script>
+</body>
+</html>
