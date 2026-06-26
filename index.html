@@ -638,6 +638,75 @@ footer b{color:var(--primary)}
             ["What is the safest way to use the AI team?", "Let it draft, recommend, and prepare work while you make the final decision."],
             ["What should I do before automating anything?", "Run one job manually first to confirm the team works."]
           ]
+        },
+        {
+          name: "Claude Code Errors & PATH Issues (PC)",
+          qa: [
+            ["I get the error claude is not recognized when I run claude --version — what do I do?", "This is a PATH issue. Run two commands in PowerShell: first Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser (type Y when asked), then irm https://claude.ai/install.ps1 | iex. Close PowerShell, reopen it, then run claude --version."],
+            ["How do I find out where Claude is installed on my PC?", "In PowerShell run Test-Path for .local/bin/claude.exe and also for .claude/bin/claude.exe one at a time. Whichever returns True is where Claude lives. The exact commands are in your setup guide."],
+            ["After finding the correct path, how do I add it to my PATH?", "In PowerShell run the SetEnvironmentVariable command to add the Claude bin folder to your PATH. The exact command is in your install guide. Then close PowerShell, reopen it, and run claude --version."],
+            ["I got True from the path check — what do I do next?", "Run the SetEnvironmentVariable command in PowerShell to register the Claude path. The exact command is in your install guide. Close PowerShell, reopen it, and run claude --version."],
+            ["Should I run PowerShell as Administrator?", "Yes — search for PowerShell in Windows, right-click, and select Run as Administrator."],
+            ["How do I paste commands into PowerShell?", "Right-click your mouse inside the PowerShell window and select Paste from the dropdown. Ctrl+V does not always work."],
+            ["Claude installed but still shows an error after restarting PowerShell — what now?", "Try closing and reopening PowerShell a second time. Several participants found they needed to restart it twice before claude --version worked."],
+            ["What if I get an Execution Policy change prompt asking Y/N?", "Type Y and press Enter to allow the policy change, then immediately run the Claude install command."],
+            ["My PC has a security warning blocking the Node.js download — what should I do?", "Click More Info on the warning, then click Run Anyway. You can also download the file using Chrome if your default browser is blocking it. Alternatively, right-click the downloaded file and select Report this file as safe."],
+            ["node --version works but claude --version still errors — what is wrong?", "Node is installed but Claude's PATH was not set. Run the install script again: irm https://claude.ai/install.ps1 | iex in PowerShell, then close and reopen it before testing claude --version again."],
+            ["Can I check if npm is working separately from Claude?", "Yes — run npm -v in PowerShell. If it returns a version number, npm is fine. If not, reinstall Node.js from nodejs.org."],
+            ["I installed Claude on my PC previously but it is not working today — why?", "PowerShell may have lost the PATH setting from the previous session. Run the two-step fix: Set-ExecutionPolicy first, then irm https://claude.ai/install.ps1 | iex. Close and reopen PowerShell after."],
+            ["What is the npm command to install Claude Code manually?", "Run: npm install -g @anthropic-ai/claude-code in PowerShell."],
+            ["What command checks whether Node.js and npm are installed?", "Run node --version for Node and npm --version for npm. If both return version numbers, they are installed correctly."]
+          ]
+        },
+        {
+          name: "Plugin Installation",
+          qa: [
+            ["What are the 3 commands to install the AI Employee Bootcamp plugin?", "Run these one at a time in PowerShell or Terminal: (1) claude plugin marketplace add danielpaulai/Purely-Personal-Run-a-business-by-itself (2) claude plugin install ai-employee-bootcamp@purely-personal-marketplace (3) claude plugin marketplace update purely-personal-marketplace"],
+            ["I ran all 3 plugin commands but the plugin does not appear in Claude — what do I do?", "Close Claude Desktop completely, then reopen it. Go to the Code tab, click Customize, and check under Personal Plugins. If still missing, run all 3 commands again, then restart Claude."],
+            ["Where do I check whether the plugin is installed?", "Open Claude Desktop, go to the Code tab, click Customize in the left bar, and look under Personal Plugins. You should see AI Employee Bootcamp listed there."],
+            ["How many skills should be installed after the plugin setup?", "You should see 23 skills installed under the AI Employee Bootcamp plugin."],
+            ["I ran the commands in Claude chat instead of PowerShell — is that okay?", "No. The plugin commands must be run in PowerShell (PC) or Terminal (Mac), not pasted into the Claude chat window. Pasting them into chat creates an Activation Map instead of installing the plugin."],
+            ["I do not see AI CEO in my plugin list — only some other plugins. What should I do?", "Go to Claude Desktop → Code tab → Customize → Personal Plugins. Look for AI Employee Bootcamp. If it is not there, run the 3 install commands again in PowerShell and restart Claude."],
+            ["I have old plugins from a previous cohort — should I remove them?", "Yes — you can remove old plugins from previous sessions before installing the new one."],
+            ["I am in Chat mode and cannot find the plugin — where is it?", "The plugin only appears in the Code tab, not in Chat. Switch to the Code section of Claude Desktop and click Customize."],
+            ["After running all commands and restarting, the plugin is still not showing — what is a final fix?", "Run the marketplace update command again: claude plugin marketplace update purely-personal-marketplace, then restart Claude Desktop one more time."]
+          ]
+        },
+        {
+          name: "GitHub Setup & Pushing Files",
+          qa: [
+            ["How do I create a GitHub repository for my Business Brain?", "Go to github.com, click your profile (top right), click Repositories, click New, give it a name (no capital letters recommended), and click Create Repository."],
+            ["Should my Business Brain GitHub repo be public or private?", "Set it to Private to protect your personal business documents. You can change this later in the repo Settings under Danger Zone → Change Visibility."],
+            ["How do I push my Business Brain folder to GitHub from Claude Code?", "Open a new session in Claude Code, select your Business Brain folder, paste your GitHub repository URL into the chat, then type: push to github. Press Enter and allow any permissions Claude requests."],
+            ["Claude says push failed due to no GitHub authentication — how do I fix this?", "Go to github.com/settings/tokens, generate a new classic Personal Access Token with repo scope, copy it, then re-run the push. When prompted for a password in the terminal, paste the token."],
+            ["I see the message Everything up-to-date after pushing — does that mean it worked?", "Yes — that message means your files are already on GitHub. The push succeeded."],
+            ["Do I need to install GitHub Desktop?", "No — GitHub Desktop is not required. You only need a GitHub account and the web interface."],
+            ["Claude asks me to allow it to use PowerShell or Terminal during the push — should I allow it?", "Yes — allow Claude to use these tools. It needs them to run the git commands on your machine."],
+            ["What is the difference between HTTP and SSH for GitHub?", "HTTP is easier to set up but requires your repo to be public or uses a Personal Access Token as a password. SSH is more secure but requires more configuration. For most participants, HTTP with a Personal Access Token works fine."],
+            ["My Mac says GitHub CLI is not installed — what are my options?", "You have two options: (1) Use SSH if you have an SSH key set up with GitHub. (2) Create a Personal Access Token at github.com/settings/tokens and use it as your password when prompted."],
+            ["How do I check if my files were pushed to GitHub successfully?", "Go to your GitHub repository page in the browser and refresh it. Your files should appear there."],
+            ["My GitHub repo URL shows a clone or download button — which URL do I copy?", "Copy the HTTPS URL shown under the green Code button on your repository page. That is the link to paste into Claude."]
+          ]
+        },
+        {
+          name: "Running the COO Brief & Connectors",
+          qa: [
+            ["How do I run the COO morning brief?", "Open Claude Code, start a new session, select your Business Brain folder, type: run my COO morning brief, choose Auto for the permission mode, and press Enter."],
+            ["The COO brief output says Google Calendar needs reconnecting — what do I do?", "Go to Claude Desktop Settings → Integrations and reconnect Google Calendar. Granting the correct permissions takes about 60 seconds and the next brief will include your calendar automatically."],
+            ["The brief output shows Gmail needs reconnecting — is that normal?", "Yes — if your Gmail or Google Calendar connector shows a permission error in the output, reconnect it in Settings → Integrations. Each connector takes about 60 seconds to fix."],
+            ["My COO brief shows the wrong time zone — how do I fix it?", "This is likely a settings issue. You can tell Claude your time zone in the prompt, or check your connector settings to ensure the correct region is set."],
+            ["Can I have multiple Gmail accounts connected?", "No — currently only one Gmail account can be connected at a time."],
+            ["Can I connect Apple Calendar to the AI team?", "There is no direct Apple Calendar connector in Claude Desktop. The best workaround is to use the Claude iOS app on your iPhone, which can make changes to your Apple Calendar directly. You can also use Notion Calendar to sync Apple Calendar and Google Calendar together."],
+            ["Can Microsoft 365 / Outlook be connected instead of Gmail?", "Yes — search for Microsoft 365 in the Claude Desktop connectors section and connect it there."],
+            ["The COO brief output is only text and there is no visual — how do I get the HTML output?", "After the brief runs, type: create a HTML page for this output. Claude will generate a styled HTML file you can save and view."],
+            ["How do I run the CMO daily post skill?", "In the same Claude Code session, type: run my CMO daily post, topic: [your topic here]. Replace the placeholder with your actual topic and press Enter."],
+            ["How many tokens does running the COO brief or CMO post use?", "It depends on the task and the model you are using. A COO brief uses roughly 4,000–6,500 tokens. Switch to a lower model like Sonnet or Haiku to reduce token usage."],
+            ["My tokens are running out fast — what should I do?", "Switch to a lower model. In Claude Code, change from Opus to Sonnet or Haiku. The output quality is still good and token usage drops significantly."],
+            ["I ran the COO brief and Notion shows only default templates — not my tasks. Why?", "You have not set up a custom Notion workspace yet. Once you build your Notion task system and reconnect the Notion connector, the brief will pull in your real data."],
+            ["Apify is not connected — will the CRO still find prospects?", "If Apify is not connected, Claude will do a normal web search instead of scraping LinkedIn directly. Connect Apify and add the correct Actor IDs from the setup document to get real LinkedIn prospect data."],
+            ["Where do I find the Apify Actor IDs to set up the CRO skill?", "The Actor IDs are in the setup document shared by the team. The link is: https://docs.google.com/document/d/1RVgfi0GfDeTwVeEoxxYXy_pWdHpUBMHOY33XhvbBrpM/edit"],
+            ["I do not have Stripe — can I still use the CFO skill?", "Yes — you can still run the CFO skill. It will work with whatever financial connectors you have set up. Stripe is recommended but not required for the skill to function."]
+          ]
         }
       ]
     },
